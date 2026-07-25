@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAIRA | Luxury Handcrafted Mirrors</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        #loader{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:99999;transition:opacity .5s ease}#loader h1{font-size:48px;letter-spacing:12px;color:#700C0C;font-family:'Fraunces',serif;animation:pulse 1.5s ease-in-out infinite}@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.97)}}.loader-hidden{opacity:0!important;visibility:hidden!important}
+        #cartSidebar{position:fixed;top:0;right:-420px;width:400px;height:100vh;background:#fff;z-index:10000;transition:right .4s ease;box-shadow:-10px 0 40px rgba(0,0,0,.1);padding:24px;overflow-y:auto}
+        #cartOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:9999;display:none}
+        .cart-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee}.cart-item img{width:60px;height:60px;border-radius:8px;object-fit:cover}
+        .cart-item-actions{display:flex;align-items:center;gap:8px;margin-top:4px}.cart-item-actions button{background:#F4EFE7;border:none;width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:16px}.cart-item-actions button:hover{background:#700C0C;color:#fff}
+        .cart-total-section{margin-top:16px;padding-top:16px;border-top:2px solid #eee}.cart-total-section .total-row{display:flex;justify-content:space-between;font-weight:700;font-size:18px}
+        .cart-count{position:absolute;top:-8px;right:-8px;background:#700C0C;color:#fff;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
+        .cart-icon{position:relative;display:inline-block}
+        .notification{position:fixed;top:20px;right:20px;padding:16px 24px;border-radius:12px;z-index:99999;transform:translateX(120%);transition:transform .4s ease;max-width:400px;color:#fff;font-family:'Inter',sans-serif}.notification.success{background:#2e7d32}.notification.error{background:#d32f2f}
+        .notification-content{display:flex;align-items:center;gap:12px}
+        .wishlist-count{position:absolute;top:-8px;right:-8px;background:#d32f2f;color:#fff;width:18px;height:18px;border-radius:50%;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
+        .wishlist-icon{position:relative;display:inline-block}
+        #searchOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(12px);z-index:9999;align-items:center;justify-content:center;opacity:0;transition:opacity .4s ease}
+        #searchOverlay.active{display:flex;opacity:1}
+        .search-modal{background:#F4EFE7;border-radius:28px;padding:40px;max-width:600px;width:90%;transform:scale(.95) translateY(20px);transition:transform .4s ease;position:relative}
+        #searchOverlay.active .search-modal{transform:scale(1) translateY(0)}
+        .search-modal input{width:100%;padding:16px 20px;border:none;border-bottom:2px solid rgba(36,26,22,.1);font-size:20px;font-family:'Inter',sans-serif;background:transparent;outline:none;color:#241A16}
+        .search-close{position:absolute;top:16px;right:20px;background:none;border:none;font-size:24px;cursor:pointer;color:#5b4c45}
+        .search-results{margin-top:20px;max-height:300px;overflow-y:auto}
+        .search-result-item{display:flex;align-items:center;gap:16px;padding:12px;border-radius:12px;cursor:pointer;transition:background .3s ease;text-decoration:none;color:inherit}
+        .search-result-item:hover{background:rgba(112,12,12,.05)}.search-result-item img{width:50px;height:50px;border-radius:8px;object-fit:cover}
+        @media(max-width:600px){#cartSidebar{width:100%;right:-100%}}
+    </style>
+</head>
+<body>
+
+<div id="loader"><h1>KAIRA</h1></div>
+<button id="topBtn">↑</button>
+
+<div id="cartSidebar">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #eee;">
+        <h3 style="font-family:'Fraunces',serif;">Your Cart (<span id="cartCountSidebar">0</span>)</h3>
+        <button onclick="closeCart()" style="background:none;border:none;font-size:24px;cursor:pointer;">×</button>
+    </div>
+    <div id="cartItemsContainer"><div style="text-align:center;padding:40px 0;"><i class="ri-shopping-bag-line" style="font-size:48px;color:#5b4c45;opacity:.3;"></i><p style="color:#5b4c45;margin-top:12px;">Your cart is empty</p><a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a></div></div>
+</div>
+<div id="cartOverlay" onclick="closeCart()"></div>
+
+<div id="searchOverlay">
+    <div class="search-modal">
+        <button class="search-close" onclick="closeSearch()">✕</button>
+        <input type="text" id="searchInput" placeholder="Search for mirrors..." oninput="searchProducts(this.value)">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+</div>
+
+<header class="nav">
+    <div class="nav-inner">
+        <a href="index.html" class="brand"><img src="assets/logo/logo.png" alt="KAIRA Logo"><span>KAIRA</span></a>
+        <nav class="nav-links">
+            <a href="collections.html">Products</a>
+            <a href="#featured">Best Sellers</a>
+            <a href="#customise">Customise</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+                <div style="display:flex;align-items:center;gap:16px;">
+            <a href="#" onclick="openSearch(event)" aria-label="Search"><i class="ri-search-line"></i></a>
+            <a href="#" class="wishlist-icon" aria-label="Wishlist" onclick="event.preventDefault(); showWishlist()">
+                <i class="ri-heart-line"></i><span class="wishlist-count" id="wishlistCount">0</span>
+            </a>
+            <a href="#" class="cart-icon" aria-label="Cart" onclick="openCart(event)">
+                <i class="ri-shopping-bag-line"></i><span class="cart-count" id="cartCount">0</span>
+            </a>
+            <a href="#" class="nav-cta">Shop Now</a>
+            <button class="nav-toggle" id="mobileMenuBtn" aria-label="Toggle menu"><i class="ri-menu-line"></i></button>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div>
+            <div class="eyebrow">Luxury Handcrafted Mirrors</div>
+            <h1>Designed to Reflect<br>Your Style.</h1>
+            <p>India's premium handcrafted mirror brand offering luxury fabric mirrors, LED mirrors and bespoke statement pieces.</p>
+            <div class="hero-ctas">
+                <a href="#collections" class="btn btn-cream">Explore Collection</a>
+                <a href="#customise" class="btn btn-outline">Customize Yours</a>
+            </div>
+            <div style="display:flex;gap:45px;margin-top:45px;flex-wrap:wrap;">
+                <div><h2 style="font-size:34px;">2500+</h2><p style="margin:0;">Mirrors Crafted</p></div>
+                <div><h2 style="font-size:34px;">25+</h2><p style="margin:0;">Fabric Colours</p></div>
+                <div><h2 style="font-size:34px;">100%</h2><p style="margin:0;">Handmade</p></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="blob-frame"><img src="assets/hero/hero.jpg" alt="Luxury Mirror" onerror="this.src='https://via.placeholder.com/500x600/700C0C/FFFFFF?text=KAIRA'"></div>
+            <div class="blob-tag">✨ India's only luxury handcrafted fabric mirror collection.</div>
+        </div>
+    </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 100" preserveAspectRatio="none"><path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,42.7C1120,32,1280,32,1360,32L1440,32L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path></svg>
+
+<section class="trust">
+    <div><span>✓</span>Premium HD Glass</div>
+    <div><span>✓</span>25+ Fabric Colours</div>
+    <div><span>✓</span>Custom Sizes</div>
+    <div><span>✓</span>PAN India Delivery</div>
+    <div><span>✓</span>Secure Packaging</div>
+    <div><span>✓</span>Handcrafted in India</div>
+</section>
+
+<!-- COLLECTIONS - PRODUCTS WILL RENDER HERE -->
+<section class="section" id="collections">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Discover</span><h2>Our Signature Collections</h2></div>
+            <p>Every collection is handcrafted with precision, premium upholstery fabrics and timeless luxury aesthetics.</p>
+        </div>
+        <div class="grid" id="collectionGrid"></div>
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section" id="featured">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Best Sellers</span><h2>Our Most Loved Mirrors</h2></div>
+            <p>Discover handcrafted statement pieces loved by thousands of homeowners across India.</p>
+        </div>
+        <div class="grid" id="featuredGrid"></div>
+    </div>
+</section>
+
+<!-- WHY KAIRA -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Why Choose KAIRA</span><h2>Luxury Crafted with Purpose</h2></div>
+            <p>Every mirror is handcrafted by skilled artisans using premium materials.</p>
+        </div>
+        <div class="grid">
+            <div class="card"><div class="card-body"><h3 class="card-name">Premium HD Glass</h3><p>Crystal-clear reflection with superior durability.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Handcrafted Excellence</h3><p>Each mirror is individually handcrafted with precision.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Fully Customisable</h3><p>Choose any size, colour and fabric to match your interior.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Secure Packaging</h3><p>Multi-layer protective packaging ensures safe delivery.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CUSTOMISE -->
+<section class="section">
+    <div class="wrap">
+        <div class="customise" id="customise">
+            <div>
+                <span class="section-tag">Customisation</span>
+                <h2>Designed Around Your Space</h2>
+                <p style="margin-top:18px;line-height:1.8;opacity:.9;">Choose any mirror design, any fabric, any colour and any size.</p>
+                <div class="swatches">
+                    <div class="swatch" style="background:#EFE5D6;"></div>
+                    <div class="swatch" style="background:#C8A46B;"></div>
+                    <div class="swatch" style="background:#6A6A6A;"></div>
+                    <div class="swatch" style="background:#2B3A55;"></div>
+                    <div class="swatch" style="background:#3D5C44;"></div>
+                    <div class="swatch" style="background:#700C0C;"></div>
+                    <div class="swatch" style="background:#000000;"></div>
+                </div>
+                <div style="margin-top:35px;"><a href="#" class="btn btn-cream">Start Customisation</a></div>
+            </div>
+            <div><img src="assets/custom/custom.jpg" style="border-radius:28px;box-shadow:0 25px 60px rgba(0,0,0,.25);" onerror="this.src='https://via.placeholder.com/500x400/700C0C/FFFFFF?text=Custom'"></div>
+        </div>
+    </div>
+</section>
+
+<!-- LIFESTYLE GALLERY -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Lifestyle</span><h2>Inspired Interiors</h2></div>
+            <p>See how KAIRA mirrors elevate modern luxury interiors.</p>
+        </div>
+        <div class="grid">
+            <div class="card"><div class="card-img"><img src="assets/gallery/gallery1.jpg" alt="Luxury interior" onerror="this.src='https://via.placeholder.com/400x500/700C0C/FFFFFF?text=Gallery'"><a href="product.html?id=1" class="view-btn"><i class="ri-eye-line"></i> View Product</a></div></div>
+            <div class="card"><div class="card-img"><img src="assets/gallery/gallery2.jpg" alt="Modern interior" onerror="this.src='https://via.placeholder.com/400x500/700C0C/FFFFFF?text=Gallery'"><a href="product.html?id=2" class="view-btn"><i class="ri-eye-line"></i> View Product</a></div></div>
+            <div class="card"><div class="card-img"><img src="assets/gallery/gallery3.jpg" alt="Elegant room" onerror="this.src='https://via.placeholder.com/400x500/700C0C/FFFFFF?text=Gallery'"><a href="product.html?id=3" class="view-btn"><i class="ri-eye-line"></i> View Product</a></div></div>
+            <div class="card"><div class="card-img"><img src="assets/gallery/gallery4.jpg" alt="Contemporary space" onerror="this.src='https://via.placeholder.com/400x500/700C0C/FFFFFF?text=Gallery'"><a href="product.html?id=4" class="view-btn"><i class="ri-eye-line"></i> View Product</a></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section reviews" id="reviews">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Testimonials</span><h2>Loved by Beautiful Homes</h2></div>
+            <p>Thousands of homeowners trust KAIRA to create timeless handcrafted mirrors.</p>
+        </div>
+        <div class="grid">
+            <div class="review-card"><div class="review-stars">★★★★★</div><p>The quality is beyond expectations. The fabric finish looks incredibly luxurious.</p><div class="review-name">— Riya Kapoor</div></div>
+            <div class="review-card"><div class="review-stars">★★★★★</div><p>Packaging was excellent and the mirror arrived in perfect condition.</p><div class="review-name">— Arjun Malhotra</div></div>
+            <div class="review-card"><div class="review-stars">★★★★★</div><p>Exactly what I wanted for my dressing room. Premium craftsmanship.</p><div class="review-name">— Neha Sharma</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="section">
+    <div class="wrap">
+        <div class="customise">
+            <div>
+                <span class="section-tag">Stay Inspired</span>
+                <h2>Join The KAIRA Journal</h2>
+                <p style="margin-top:20px;line-height:1.8;opacity:.9;">Get early access to new launches, exclusive offers and interior styling inspiration.</p>
+            </div>
+            <div>
+                <form id="footerNewsletter" style="display:flex;flex-direction:column;gap:18px;">
+                    <input type="text" placeholder="Your Name" style="padding:18px;border-radius:14px;border:none;font-size:15px;">
+                    <input type="email" placeholder="Email Address" style="padding:18px;border-radius:14px;border:none;font-size:15px;">
+                    <button class="btn btn-cream">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="wrap">
+        <div class="footer-grid">
+            <div>
+                <h2 class="serif">KAIRA</h2>
+                <p style="margin-top:18px;">Luxury handcrafted mirrors designed for timeless interiors.</p>
+                <div style="display:flex;gap:12px;margin-top:16px;">
+                    <a href="#" aria-label="Instagram"><i class="ri-instagram-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="ri-youtube-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    <a href="#" aria-label="WhatsApp"><i class="ri-whatsapp-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4>Collections</h4>
+                <a href="#">Fabric Mirrors</a><br>
+                <a href="#">LED Collection</a><br>
+                <a href="#">Evergreen</a><br>
+                <a href="#">Bathroom Mirrors</a>
+            </div>
+            <div>
+                <h4>Connect</h4>
+                <a href="#">Instagram</a><br>
+                <a href="#">Pinterest</a><br>
+                <a href="#">WhatsApp</a><br>
+                <a href="#">support@kairahandcraft.store</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>© 2026 KAIRA. All Rights Reserved.</div>
+            <div>Crafted with ❤ in India.</div>
+        </div>
+    </div>
+</footer>
+
+<a href="#" style="position:fixed;right:25px;bottom:25px;width:62px;height:62px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 20px 40px rgba(0,0,0,.25);z-index:999;" aria-label="Contact on WhatsApp"><i class="ri-whatsapp-line"></i></a>
+
+<!-- OUR PROCESS -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Our Process</span><h2>From Workshop to Your Home</h2></div>
+            <p>Every KAIRA mirror is handcrafted with patience, precision and luxury finishes.</p>
+        </div>
+        <div class="grid">
+            <div class="card"><div class="card-body"><span class="card-cat">01</span><h3 class="card-name">Design Selection</h3><p>Choose your favourite mirror shape, size and collection.</p></div></div>
+            <div class="card"><div class="card-body"><span class="card-cat">02</span><h3 class="card-name">Fabric Selection</h3><p>Select from premium upholstery fabrics and luxury colour palettes.</p></div></div>
+            <div class="card"><div class="card-body"><span class="card-cat">03</span><h3 class="card-name">Handcrafted</h3><p>Skilled artisans handcraft every mirror using premium materials.</p></div></div>
+            <div class="card"><div class="card-body"><span class="card-cat">04</span><h3 class="card-name">Delivered Safely</h3><p>Multi-layer packaging ensures your mirror reaches you in perfect condition.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="section">
+    <div class="wrap">
+        <div style="background:linear-gradient(135deg,#700C0C,#470707);border-radius:30px;padding:80px 60px;text-align:center;color:white;">
+            <span class="section-tag" style="color:#C8A46B;">Bespoke Luxury</span>
+            <h2 style="font-size:52px;margin:20px 0;">Create Your Dream Mirror</h2>
+            <p style="max-width:700px;margin:auto;opacity:.9;line-height:1.8;">Choose any shape. Any colour. Any fabric. Any size. We'll handcraft it exclusively for you.</p>
+            <div style="margin-top:35px;"><a href="#customise" class="btn btn-cream">Start Your Custom Order</a></div>
+        </div>
+    </div>
+</section>
+
+<!-- BRAND STORY -->
+<section class="section">
+    <div class="wrap">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+            <div><img src="assets/story/workshop.jpg" alt="KAIRA Workshop" style="border-radius:30px;width:100%;box-shadow:var(--shadow);" onerror="this.src='https://via.placeholder.com/500x400/700C0C/FFFFFF?text=Workshop'"></div>
+            <div>
+                <span class="section-tag">Crafted In India</span>
+                <h2>Every Mirror Tells A Story.</h2>
+                <p style="margin:25px 0;color:var(--ink-soft);line-height:1.9;">At KAIRA, every mirror begins with skilled hands, premium materials and thoughtful craftsmanship.</p>
+                <a href="about.html" class="btn btn-maroon" style="margin-top:30px;">Discover Our Story</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+    <div class="wrap">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center;">
+            <div><h2 class="serif" style="font-size:62px;color:var(--maroon);">2500+</h2><p>Mirrors Crafted</p></div>
+            <div><h2 class="serif" style="font-size:62px;color:var(--maroon);">25+</h2><p>Luxury Fabrics</p></div>
+            <div><h2 class="serif" style="font-size:62px;color:var(--maroon);">100%</h2><p>Handcrafted</p></div>
+            <div><h2 class="serif" style="font-size:62px;color:var(--maroon);">4.9★</h2><p>Customer Rating</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- FULL WIDTH CTA -->
+<section class="section">
+    <div class="wrap">
+        <div style="background-image:url('assets/banner/banner.jpg');background-size:cover;background-position:center;padding:120px 70px;border-radius:35px;position:relative;overflow:hidden;" onerror="this.style.background='linear-gradient(135deg,#700C0C,#470707)'">
+            <div style="position:absolute;inset:0;background:rgba(71,7,7,.58);"></div>
+            <div style="position:relative;z-index:2;max-width:650px;color:white;">
+                <span class="section-tag" style="color:#F5D8A5;">Luxury Living</span>
+                <h2 style="font-size:58px;line-height:1.1;">Transform Your Interior With KAIRA.</h2>
+                <p style="margin:28px 0;line-height:1.8;font-size:17px;opacity:.9;">Luxury handcrafted mirrors designed for elegant homes and contemporary interiors.</p>
+                <div style="display:flex;gap:18px;flex-wrap:wrap;">
+                    <a href="#featured" class="btn btn-cream">Shop Collection</a>
+                    <a href="#customise" class="btn btn-outline">Custom Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="section">
+    <div class="wrap">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;">
+            <div>
+                <span class="section-tag">Luxury Living</span>
+                <h2>Designed For Modern Homes.</h2>
+                <p style="margin:25px 0;line-height:1.9;color:var(--ink-soft);">Whether you're styling a luxury bedroom or designer living room, KAIRA mirrors create timeless visual impact.</p>
+                <ul style="padding:0;margin:35px 0;list-style:none;display:grid;gap:16px;">
+                    <li>✓ Hotels & Resorts</li>
+                    <li>✓ Luxury Homes</li>
+                    <li>✓ Interior Designers</li>
+                    <li>✓ Salons & Studios</li>
+                    <li>✓ Commercial Projects</li>
+                </ul>
+                <a href="#featured" class="btn btn-maroon">View Collection</a>
+            </div>
+            <div><img src="assets/editorial/editorial1.jpg" style="width:100%;border-radius:30px;box-shadow:var(--shadow);" alt="KAIRA editorial" onerror="this.src='https://via.placeholder.com/500x400/700C0C/FFFFFF?text=Editorial'"></div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <div><span class="section-tag">Our Services</span><h2>Luxury Experience Beyond Products</h2></div>
+            <p>From consultation to installation, we deliver a complete premium experience.</p>
+        </div>
+        <div class="grid">
+            <div class="card"><div class="card-body"><h3 class="card-name">Interior Consultation</h3><p>Need help choosing the perfect mirror? Our team will guide you.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Custom Manufacturing</h3><p>Choose any shape, size, fabric or finish.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Bulk Orders</h3><p>Perfect for hotels, cafes, showrooms and commercial spaces.</p></div></div>
+            <div class="card"><div class="card-body"><h3 class="card-name">Safe Delivery</h3><p>Premium multilayer packaging with PAN India shipping.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<section style="padding:25px 0;background:var(--maroon);overflow:hidden;">
+    <div class="marquee"><span>Luxury Mirrors • Handcrafted • Premium Fabric • Custom Sizes • HD Glass • Interior Design • Made in India •</span></div>
+</section>
+
+<!-- ============================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================ -->
+
+<script>
+    // ============================================
+    // PRODUCT DATA - 17 Products
+    // ============================================
+    var products = [
+        {id:1, name:"Waved Full Length Mirror", category:"Fabric Mirrors", price:12000, originalPrice:15999, discount:25, rating:4.9, reviews:128, featured:true, bestSeller:true, images:["assets/products/product1.jpg"], description:"Premium handcrafted full-length mirror with elegant waved design.", stock:15},
+        {id:2, name:"Luxe Cloud Mirror", category:"Fabric Mirrors", price:14500, originalPrice:18999, discount:24, rating:4.8, reviews:95, featured:true, bestSeller:false, images:["assets/products/product2.jpg"], description:"Luxurious cloud-inspired mirror design with soft curves.", stock:10},
+        {id:3, name:"Waved Flat Top Mirror", category:"Fabric Mirrors", price:11500, originalPrice:14999, discount:23, rating:4.7, reviews:67, featured:false, bestSeller:false, images:["assets/products/product3.jpg"], description:"Modern waved design with a flat top silhouette.", stock:12},
+        {id:4, name:"Cloud Reflekt Mirror", category:"Fabric Mirrors", price:8500, originalPrice:10999, discount:23, rating:4.6, reviews:52, featured:false, bestSeller:false, images:["assets/products/product4.jpg"], description:"Cloud-inspired reflective mirror with soft curves.", stock:18},
+        {id:5, name:"Luxury Wavy Trio Mirror", category:"Fabric Mirrors", price:18999, originalPrice:24999, discount:24, rating:4.9, reviews:42, featured:true, bestSeller:false, images:["assets/products/product5.jpg"], description:"Premium triple-waved design with luxurious fabric finish.", stock:6},
+        {id:6, name:"New Gen Wavy Mirror", category:"Fabric Mirrors", price:14500, originalPrice:17999, discount:19, rating:4.7, reviews:38, featured:true, bestSeller:false, images:["assets/products/product6.jpg"], description:"Next-generation wavy design featuring modern curves.", stock:8},
+        {id:7, name:"Wavy Mirror", category:"Fabric Mirrors", price:9999, originalPrice:12999, discount:23, rating:4.5, reviews:56, featured:false, bestSeller:false, images:["assets/products/product7.jpg"], description:"Classic wavy mirror with timeless design.", stock:14},
+        {id:8, name:"Classy Waved Reflekt Mirror", category:"Fabric Mirrors", price:11999, originalPrice:14999, discount:20, rating:4.8, reviews:45, featured:false, bestSeller:false, images:["assets/products/product8.jpg"], description:"Elegant waved reflective design with premium fabric.", stock:10},
+        {id:9, name:"Arched Fabric Mirror", category:"Fabric Mirrors", price:13500, originalPrice:16999, discount:21, rating:4.8, reviews:34, featured:true, bestSeller:false, images:["assets/products/product9.jpg"], description:"Elegant arched design with premium fabric upholstery.", stock:8},
+        {id:10, name:"Waved Dual Tone Mirror", category:"Fabric Mirrors", price:15999, originalPrice:19999, discount:20, rating:4.9, reviews:29, featured:true, bestSeller:false, images:["assets/products/product10.jpg"], description:"Stunning dual-tone waved design with contrasting fabric.", stock:7},
+        {id:11, name:"Capsule LED Mirror", category:"LED Collection", price:16999, originalPrice:21999, discount:23, rating:4.7, reviews:28, featured:true, bestSeller:false, images:["assets/products/product11.jpg"], description:"Modern capsule-shaped LED mirror with soft illumination.", stock:10},
+        {id:12, name:"Rectangle LED Mirror", category:"LED Collection", price:14999, originalPrice:18999, discount:21, rating:4.6, reviews:32, featured:false, bestSeller:false, images:["assets/products/product12.jpg"], description:"Classic rectangle LED mirror with premium lighting.", stock:12},
+        {id:13, name:"Oval Bathroom Mirror", category:"Bathroom Collection", price:8999, originalPrice:11999, discount:25, rating:4.7, reviews:48, featured:false, bestSeller:true, images:["assets/products/product13.jpg"], description:"Elegant oval design crafted for modern bathrooms.", stock:15},
+        {id:14, name:"Luxe Bathroom Mirror", category:"Bathroom Collection", price:12999, originalPrice:15999, discount:19, rating:4.8, reviews:36, featured:true, bestSeller:false, images:["assets/products/product14.jpg"], description:"Premium luxury bathroom mirror with sophisticated design.", stock:10},
+        {id:15, name:"Classic Bathroom Mirror", category:"Bathroom Collection", price:7499, originalPrice:9999, discount:25, rating:4.5, reviews:62, featured:false, bestSeller:false, images:["assets/products/product15.jpg"], description:"Timeless classic bathroom mirror with clean design.", stock:20},
+        {id:16, name:"Arched Bathroom Mirror", category:"Bathroom Collection", price:9999, originalPrice:12999, discount:23, rating:4.7, reviews:42, featured:true, bestSeller:false, images:["assets/products/product16.jpg"], description:"Elegant arched design crafted for modern bathrooms.", stock:12},
+        {id:17, name:"Boxed Bathroom Mirror", category:"Bathroom Collection", price:6999, originalPrice:8999, discount:22, rating:4.4, reviews:38, featured:false, bestSeller:false, images:["assets/products/product17.jpg"], description:"Simple boxed design with premium finish.", stock:18}
+    ];
+
+    // ============================================
+    // RENDER PRODUCTS
+    // ============================================
+    function renderAllProducts() {
+        // Collection Grid
+        var grid = document.getElementById('collectionGrid');
+        if(grid) {
+            grid.innerHTML = products.map(function(p) {
+                var img = p.images && p.images[0] ? p.images[0] : '';
+                return '<article class="card">' +
+                    '<div class="card-img">' +
+                    '<img src="' + img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/400x500/700C0C/FFFFFF?text=' + encodeURIComponent(p.name) + '\'">' +
+                    '<a href="product.html?id=' + p.id + '" class="view-btn"><i class="ri-eye-line"></i> View Product</a>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                    '<span class="card-cat">' + p.category + '</span>' +
+                    '<h3 class="card-name">' + p.name + '</h3>' +
+                    '<p>' + p.description.substring(0, 50) + '...</p>' +
+                    '<div class="card-price">₹' + p.price.toLocaleString() + '</div>' +
+                    '<button class="btn btn-maroon add-to-cart" data-id="' + p.id + '" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>' +
+                    '</div></article>';
+            }).join('');
+        }
+
+        // Featured Grid
+        var fgrid = document.getElementById('featuredGrid');
+        if(fgrid) {
+            var featured = products.filter(function(p) { return p.featured || p.bestSeller; }).slice(0, 8);
+            fgrid.innerHTML = featured.map(function(p) {
+                var img = p.images && p.images[0] ? p.images[0] : '';
+                var badge = p.bestSeller ? '⭐ BEST SELLER' : p.featured ? '✦ FEATURED' : '';
+                return '<div class="card">' +
+                    '<div class="card-img">' +
+                    '<img src="' + img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/400x500/700C0C/FFFFFF?text=' + encodeURIComponent(p.name) + '\'">' +
+                    '<a href="product.html?id=' + p.id + '" class="view-btn"><i class="ri-eye-line"></i> View Product</a>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                    '<span class="card-cat">' + badge + '</span>' +
+                    '<h3 class="card-name">' + p.name + '</h3>' +
+                    '<div class="card-price">₹' + p.price.toLocaleString() + '</div>' +
+                    '<button class="btn btn-maroon add-to-cart" data-id="' + p.id + '" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>' +
+                    '</div></div>';
+            }).join('');
+        }
+    }
+
+    // ============================================
+    // CART FUNCTIONS
+    // ============================================
+    var cartItems = JSON.parse(localStorage.getItem('kaira_cart')) || [];
+
+    function addToCart(id) {
+        var p = products.find(function(x) { return x.id === id; });
+        if(!p) return;
+        var existing = cartItems.find(function(x) { return x.id === id; });
+        if(existing) { existing.quantity++; }
+        else { cartItems.push({id:p.id, name:p.name, price:p.price, quantity:1, image:p.images && p.images[0] ? p.images[0] : ''}); }
+        localStorage.setItem('kaira_cart', JSON.stringify(cartItems));
+        updateCartUI();
+        openCart();
+    }
+
+    function updateCartUI() {
+        var count = cartItems.reduce(function(s, i) { return s + i.quantity; }, 0);
+        var el = document.getElementById('cartCount');
+        if(el) { el.textContent = count; el.style.display = count > 0 ? 'flex' : 'none'; }
+        var el2 = document.getElementById('cartCountSidebar');
+        if(el2) el2.textContent = count;
+        renderCartSidebar();
+    }
+
+    function renderCartSidebar() {
+        var container = document.getElementById('cartItemsContainer');
+        if(!container) return;
+        if(cartItems.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:40px 0;"><i class="ri-shopping-bag-line" style="font-size:48px;color:#5b4c45;opacity:.3;"></i><p style="color:#5b4c45;margin-top:12px;">Your cart is empty</p><a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a></div>';
+            return;
+        }
+        var html = '';
+        var total = 0;
+        cartItems.forEach(function(item) {
+            total += item.price * item.quantity;
+            html += '<div class="cart-item"><img src="' + item.image + '" alt="' + item.name + '"><div><h5>' + item.name + '</h5><div class="cart-item-actions"><button onclick="updateQty(' + item.id + ',-1)">−</button><span>' + item.quantity + '</span><button onclick="updateQty(' + item.id + ',1)">+</button><span style="font-weight:600;color:#700C0C;margin-left:8px;">₹' + (item.price * item.quantity).toLocaleString() + '</span></div></div></div>';
+        });
+        html += '<div class="cart-total-section"><div class="total-row"><span>Total</span><span>₹' + total.toLocaleString() + '</span></div><button onclick="checkout()" class="btn btn-maroon" style="width:100%;margin-top:12px;padding:14px;justify-content:center;">Proceed to Checkout</button></div>';
+        container.innerHTML = html;
+    }
+
+    function updateQty(id, change) {
+        var item = cartItems.find(function(x) { return x.id === id; });
+        if(item) {
+            item.quantity += change;
+            if(item.quantity <= 0) { cartItems = cartItems.filter(function(x) { return x.id !== id; }); }
+            localStorage.setItem('kaira_cart', JSON.stringify(cartItems));
+            updateCartUI();
+        }
+    }
+
+    function openCart() {
+        var sidebar = document.getElementById('cartSidebar');
+        var overlay = document.getElementById('cartOverlay');
+        if(sidebar) { sidebar.style.right = '0'; if(overlay) overlay.style.display = 'block'; renderCartSidebar(); }
+    }
+
+    function closeCart() {
+        var sidebar = document.getElementById('cartSidebar');
+        var overlay = document.getElementById('cartOverlay');
+        if(sidebar) { sidebar.style.right = '-420px'; if(overlay) overlay.style.display = 'none'; }
+    }
+
+    function checkout() {
+        if(cartItems.length === 0) { alert('Your cart is empty!'); return; }
+        alert('🛒 Proceeding to checkout!\nTotal: ₹' + cartItems.reduce(function(s, i) { return s + i.price * i.quantity; }, 0).toLocaleString());
+    }
+
+    // ============================================
+    // SEARCH
+    // ============================================
+    function openSearch(e) { if(e) e.preventDefault(); var o = document.getElementById('searchOverlay'); if(o) { o.style.display='flex'; setTimeout(function(){ o.style.opacity='1'; }, 50); document.body.style.overflow='hidden'; } }
+    function closeSearch() { var o = document.getElementById('searchOverlay'); if(o) { o.style.opacity='0'; setTimeout(function(){ o.style.display='none'; document.body.style.overflow=''; }, 400); } }
+    function searchProducts(query) {
+        var results = document.getElementById('searchResults');
+        if(!results) return;
+        if(query.length < 2) { results.innerHTML = ''; return; }
+        var filtered = products.filter(function(p) { return p.name.toLowerCase().includes(query.toLowerCase()) || p.category.toLowerCase().includes(query.toLowerCase()); });
+        if(filtered.length === 0) { results.innerHTML = '<p style="padding:20px;text-align:center;color:#5b4c45;">No products found</p>'; return; }
+        results.innerHTML = filtered.map(function(p) {
+            var img = p.images && p.images[0] ? p.images[0] : '';
+            return '<a href="product.html?id=' + p.id + '" class="search-result-item"><img src="' + img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/50x50/700C0C/FFFFFF?text=' + encodeURIComponent(p.name) + '\'"><div><h4>' + p.name + '</h4><p>₹' + p.price.toLocaleString() + '</p></div></a>';
+        }).join('');
+    }
+
+    function showWishlist() { alert('❤️ Wishlist feature coming soon!'); }
+
+    // ============================================
+    // EVENT LISTENERS - Add to Cart
+    // ============================================
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.add-to-cart');
+        if(btn) {
+            e.preventDefault();
+            var id = parseInt(btn.getAttribute('data-id'));
+            if(id) { addToCart(id); }
+        }
+    });
+
+    // ============================================
+    // HIDE LOADER
+    // ============================================
+    function hideLoader() {
+        var loader = document.getElementById('loader');
+        if(loader) {
+            loader.style.transition = 'opacity 0.5s ease';
+            loader.style.opacity = '0';
+            setTimeout(function() { loader.style.display = 'none'; }, 500);
+        }
+    }
+    window.addEventListener('load', hideLoader);
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(hideLoader, 500);
+        setTimeout(renderAllProducts, 100);
+    });
+    setTimeout(hideLoader, 2000);
+
+    // ============================================
+    // MOBILE MENU
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('mobileMenuBtn');
+        var links = document.querySelector('.nav-links');
+        if(btn && links) {
+            btn.addEventListener('click', function() {
+                links.classList.toggle('show');
+                var icon = btn.querySelector('i');
+                if(icon) { icon.className = links.classList.contains('show') ? 'ri-close-line' : 'ri-menu-line'; }
+            });
+        }
+        updateCartUI();
+    });
+
+    console.log('🚀 KAIRA Loaded! Products:', products.length);
+</script>
+</body>
+</html>

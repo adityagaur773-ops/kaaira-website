@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAIRA | Luxury Handcrafted Mirrors</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+        /* LOADER */
+        #loader {
+            position: fixed;
+            height: 100vh;
+            width: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+        #loader h1 {
+            font-size: 50px;
+            letter-spacing: 10px;
+            color: #700C0C;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.98); }
+        }
+
+        /* CART */
+        .cart-icon { position: relative; display: inline-block; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: #700C0C; color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; }
+        #cartSidebar { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: white; z-index: 10000; transition: right 0.4s ease; box-shadow: -10px 0 40px rgba(0,0,0,0.1); padding: 24px; overflow-y: auto; }
+        #cartOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+        .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .cart-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+        .cart-item-details { flex: 1; }
+        .cart-item-details h5 { margin: 0 0 4px; font-size: 14px; }
+        .cart-item-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+        .cart-item-actions button { background: #F4EFE7; border: none; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .cart-item-actions button:hover { background: #700C0C; color: white; }
+        .cart-total-section { margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--line); }
+        .cart-total-section .total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 18px; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; z-index: 99999; transform: translateX(120%); transition: transform 0.4s ease; max-width: 400px; color: white; font-family: 'Inter', sans-serif; }
+        .notification.success { background: #2e7d32; }
+        .notification.error { background: #d32f2f; }
+        .notification.info { background: #1976d2; }
+        .notification-content { display: flex; align-items: center; gap: 12px; }
+
+        /* PRODUCT */
+        .product-gallery-main { border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px -25px rgba(36,26,22,0.35); aspect-ratio: 4/5; background: #FBF8F3; }
+        .product-gallery-main img { width: 100%; height: 100%; object-fit: cover; }
+        .product-thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+        .product-thumbnail { aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; opacity: 0.6; }
+        .product-thumbnail:hover { opacity: 0.8; }
+        .product-thumbnail.active { border-color: #B08D57; opacity: 1; }
+        .product-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .size-selector, .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .size-option { padding: 10px 20px; border: 1px solid var(--line); border-radius: 50px; cursor: pointer; font-size: 13px; font-weight: 500; background: transparent; transition: all 0.3s ease; }
+        .size-option:hover { border-color: #700C0C; color: #700C0C; }
+        .size-option.active { background: #700C0C; color: white; border-color: #700C0C; }
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; }
+        .color-dot:hover { transform: scale(1.1); }
+        .color-dot.active { border-color: #B08D57; box-shadow: 0 0 0 3px rgba(176,141,87,0.2); }
+        .buy-section { display: flex; gap: 14px; margin: 24px 0; flex-wrap: wrap; }
+        .buy-section .btn { flex: 1; justify-content: center; padding: 16px 32px; min-width: 140px; }
+        .quantity-selector { display: flex; align-items: center; gap: 12px; }
+        .quantity-selector button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: transparent; font-size: 18px; cursor: pointer; transition: all 0.3s ease; }
+        .quantity-selector button:hover { background: #700C0C; color: white; }
+        .quantity-selector span { font-size: 18px; font-weight: 600; min-width: 40px; text-align: center; }
+        .product-trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; padding: 20px; background: #FBF8F3; border-radius: 16px; border: 1px solid var(--line); }
+        .product-trust-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #5b4c45; }
+        .product-trust-item i { color: #B08D57; font-size: 18px; }
+        .shipping-info { background: #FBF8F3; border-radius: 16px; padding: 20px 24px; margin: 20px 0; border: 1px solid var(--line); }
+        .ship-row { display: flex; gap: 12px; align-items: center; }
+        .ship-row input { flex: 1; padding: 12px 16px; border-radius: 50px; border: 1px solid var(--line); font-size: 14px; }
+        .ship-btn { padding: 12px 24px; border-radius: 50px; border: none; background: #241A16; color: white; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s ease; }
+        .ship-btn:hover { background: #700C0C; }
+        .ship-result { margin-top: 12px; font-size: 14px; font-weight: 600; min-height: 20px; }
+        .ship-detail { display: flex; gap: 20px; margin-top: 12px; flex-wrap: wrap; font-size: 13px; color: #5b4c45; }
+        .ship-detail i { color: #B08D57; margin-right: 6px; }
+        .product-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; padding: 56px 0 20px; }
+        .product-info h1 { font-size: clamp(30px, 3.6vw, 42px); margin-bottom: 10px; }
+        .product-price { font-size: 22px; color: #700C0C; font-weight: 700; margin: 10px 0 20px; }
+        .product-price .original { font-size: 18px; color: #5b4c45; text-decoration: line-through; margin-left: 12px; font-weight: 400; }
+        .product-price .discount { font-size: 14px; color: #2e7d32; background: #e8f5e9; padding: 4px 12px; border-radius: 50px; margin-left: 12px; font-weight: 600; }
+        .product-desc { color: #5b4c45; line-height: 1.8; margin-bottom: 24px; }
+        .rating { color: #c89b5b; font-size: 18px; }
+        .rating span { color: #777; font-size: 14px; margin-left: 8px; }
+        @media (max-width: 768px) {
+            .product-layout { grid-template-columns: 1fr; gap: 30px; }
+            .buy-section { flex-direction: column; }
+            .buy-section .btn { width: 100%; }
+            .product-trust { grid-template-columns: 1fr 1fr; }
+            #cartSidebar { width: 100%; right: -100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <h1>KAIRA</h1>
+    </div>
+
+    <button id="topBtn">↑</button>
+
+    <!-- CART SIDEBAR -->
+    <div id="cartSidebar">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--line);">
+            <h3 style="font-family:'Fraunces',serif;">Your Cart (<span id="cartCountSidebar">0</span>)</h3>
+            <button onclick="closeCart()" style="background:none;border:none;font-size:24px;cursor:pointer;">×</button>
+        </div>
+        <div id="cartItemsContainer">
+            <div style="text-align:center;padding:40px 0;">
+                <i class="ri-shopping-bag-line" style="font-size:48px;color:var(--ink-soft);opacity:0.3;"></i>
+                <p style="color:var(--ink-soft);margin-top:12px;">Your cart is empty</p>
+                <a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a>
+            </div>
+        </div>
+    </div>
+    <div id="cartOverlay" onclick="closeCart()"></div>
+
+    <!-- NAVIGATION -->
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">
+                <img src="assets/logo/logo.png" alt="KAIRA Logo">
+                <span>KAIRA</span>
+            </a>
+            <nav class="nav-links">
+                <a href="collections.html">Products</a>
+                <a href="#featured">Best Sellers</a>
+                <a href="#customise">Customise</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+                <div style="display:flex;align-items:center;gap:16px;">
+                <a href="#" aria-label="Search"><i class="ri-search-line"></i></a>
+                <a href="#" aria-label="Wishlist"><i class="ri-heart-line"></i></a>
+                <a href="#" class="cart-icon" aria-label="Cart" onclick="openCart()">
+                    <i class="ri-shopping-bag-line"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="#" class="nav-cta">Shop Now</a>
+                <button class="nav-toggle" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PRODUCT PAGE -->
+    <section class="section">
+        <div class="wrap">
+            <div class="product-layout" id="productLayout">
+                
+                <!-- LEFT: Gallery -->
+                <div class="product-gallery">
+                    <div class="product-gallery-main">
+                        <img src="assets/products/product1.jpg" id="mainProductImage" alt="Luxury Mirror">
+                    </div>
+                    <div class="product-thumbnails" id="thumbnails">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+
+                <!-- RIGHT: Info -->
+                <div class="product-info" id="productInfo">
+                    <div class="rating">
+                        ★★★★★ <span id="reviewCount">120 Reviews</span>
+                    </div>
+
+                    <h1 id="productName">Loading...</h1>
+                    
+                    <div class="product-price">
+                        ₹<span id="productPrice">0</span>
+                        <span class="original">₹<span id="originalPrice">0</span></span>
+                        <span class="discount">-<span id="discountPercent">0</span>%</span>
+                    </div>
+
+                    <p class="product-desc" id="productDesc">Loading product details...</p>
+
+                    <!-- Sizes -->
+                    <div class="product-option">
+                        <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;">Select Size</label>
+                        <div class="size-selector" id="sizeSelector">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div class="product-option">
+                        <label style="display:block;margin-bottom:8px;font-weight:600;font-size:14px;">Select Colour</label>
+                        <div class="color-picker" id="colorPicker">
+                            <!-- Generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Quantity & Cart -->
+                    <div class="buy-section">
+                        <div class="quantity-selector">
+                            <button onclick="updateQuantity(-1)">−</button>
+                            <span id="qtyDisplay">1</span>
+                            <button onclick="updateQuantity(1)">+</button>
+                        </div>
+                        <button class="btn btn-maroon" onclick="addToCartFromProduct()" style="flex:1;justify-content:center;">
+                            <i class="ri-shopping-cart-line"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-gold" onclick="buyNow()" style="flex:1;justify-content:center;">
+                            <i class="ri-flashlight-line"></i> Buy Now
+                        </button>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="product-trust">
+                        <div class="product-trust-item"><i class="ri-truck-line"></i> Free Shipping</div>
+                        <div class="product-trust-item"><i class="ri-shield-check-line"></i> Secure Payment</div>
+                        <div class="product-trust-item"><i class="ri-return-box-line"></i> Easy Returns</div>
+                    </div>
+
+                    <!-- Shipping -->
+                    <div class="shipping-info">
+                        <div class="ship-row">
+                            <input type="text" id="pincodeInput" placeholder="Enter Pincode" maxlength="6">
+                            <button class="ship-btn" onclick="checkShipping()">Check</button>
+                        </div>
+                        <div class="ship-result" id="shipResult"></div>
+                        <div class="ship-detail">
+                            <span><i class="ri-time-line"></i> <span id="deliveryDays">5-7</span> Business Days</span>
+                            <span><i class="ri-customer-service-line"></i> 24/7 Support</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    
+<!-- ======================= RELATED PRODUCTS ======================= -->
+<section class="section" style="padding-top:0;">
+    <div class="wrap">
+        <div class="section-head">
+            <div>
+                <span class="section-tag">You May Also Like</span>
+                <h2>Related Products</h2>
+            </div>
+            <p>Discover more handcrafted mirrors from our collection.</p>
+        </div>
+        <div class="grid" id="relatedGrid">
+            <!-- Rendered by JavaScript -->
+        </div>
+    </div>
+</section>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-grid">
+                <div>
+                    <h2 class="serif">KAIRA</h2>
+                    <p style="margin-top:18px;">Luxury handcrafted mirrors designed for timeless interiors.</p>
+                    <div style="display:flex;gap:12px;margin-top:16px;">
+                        <a href="#" aria-label="Instagram"><i class="ri-instagram-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="ri-youtube-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="ri-whatsapp-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Collections</h4>
+                    <a href="#">Fabric Mirrors</a><br>
+                    <a href="#">LED Collection</a><br>
+                    <a href="#">Evergreen</a><br>
+                    <a href="#">Bathroom Mirrors</a>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <a href="#">Instagram</a><br>
+                    <a href="#">Pinterest</a><br>
+                    <a href="#">WhatsApp</a><br>
+                    <a href="mailto:support@kairahandcraft.store">support@kairahandcraft.store</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 KAIRA. All Rights Reserved.</div>
+                <div>Crafted with ❤ in India.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WHATSAPP -->
+    <a href="#" style="position:fixed;right:25px;bottom:25px;width:62px;height:62px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 20px 40px rgba(0,0,0,.25);z-index:999;" aria-label="Contact on WhatsApp">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <!-- SCRIPTS -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+
+    <script>
+        // ==========================
+        // HIDE LOADER
+        // ==========================
+        
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            if (loader && loader.style.display !== 'none') {
+                loader.style.transition = 'opacity 0.5s ease';
+                loader.style.opacity = '0';
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 500);
+            }
+        }
+
+        window.addEventListener('load', hideLoader);
+        setTimeout(hideLoader, 2000);
+
+        // ==========================
+        // PRODUCT PAGE FUNCTIONS
+        // ==========================
+
+        let currentProductId = 1;
+        let currentSize = '24x36';
+        let currentColor = '#EFE5D6';
+        let currentQty = 1;
+
+        function loadProduct() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const id = parseInt(params.get('id')) || 1;
+                currentProductId = id;
+
+                console.log('Loading product ID:', id);
+
+                const product = getProductById(id);
+                if (!product) {
+                    document.getElementById('productName').textContent = 'Product Not Found';
+                    return;
+                }
+
+                console.log('Product found:', product.name);
+
+                // Update product info
+                document.getElementById('productName').textContent = product.name;
+                document.getElementById('productPrice').textContent = product.price.toLocaleString();
+                document.getElementById('originalPrice').textContent = product.originalPrice.toLocaleString();
+                document.getElementById('discountPercent').textContent = product.discount;
+                document.getElementById('productDesc').textContent = product.description;
+                document.getElementById('reviewCount').textContent = product.reviews + ' Reviews';
+                document.getElementById('deliveryDays').textContent = product.deliveryTime.replace(' business days', '');
+
+                // Update main image
+                document.getElementById('mainProductImage').src = product.images[0];
+
+                // Update thumbnails
+                const thumbnailsContainer = document.getElementById('thumbnails');
+                thumbnailsContainer.innerHTML = '';
+                product.images.forEach((img, index) => {
+                    const div = document.createElement('div');
+                    div.className = `product-thumbnail ${index === 0 ? 'active' : ''}`;
+                    div.innerHTML = `<img src="${img}" alt="Thumbnail ${index + 1}">`;
+                    div.onclick = function() { changeImage(img); };
+                    thumbnailsContainer.appendChild(div);
+                });
+
+                // Update sizes
+                const sizeContainer = document.getElementById('sizeSelector');
+                sizeContainer.innerHTML = '';
+                product.sizes.forEach((size, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = `size-option ${index === 0 ? 'active' : ''}`;
+                    btn.textContent = size;
+                    btn.onclick = function() { selectSize(this, size); };
+                    sizeContainer.appendChild(btn);
+                });
+                currentSize = product.sizes[0];
+
+                // Update colors
+                const colorContainer = document.getElementById('colorPicker');
+                colorContainer.innerHTML = '';
+                product.colors.forEach((color, index) => {
+                    const dot = document.createElement('span');
+                    dot.className = `color-dot ${index === 0 ? 'active' : ''}`;
+                    dot.style.background = color;
+                    dot.onclick = function() { selectColor(this, color); };
+                    colorContainer.appendChild(dot);
+                });
+                currentColor = product.colors[0];
+
+                // Load related products
+                loadRelatedProducts(product.id);
+
+            } catch (error) {
+                console.error('Error loading product:', error);
+                document.getElementById('productName').textContent = 'Error Loading Product';
+            }
+        }
+
+        function loadRelatedProducts(currentId) {
+            try {
+                const related = products
+                    .filter(p => p.id !== currentId)
+                    .slice(0, 3);
+                
+                const container = document.getElementById('relatedProducts');
+                container.innerHTML = '';
+                
+                related.forEach(p => {
+                    container.innerHTML += `
+                        <div class="card">
+                            <div class="card-img">
+                                <img src="${p.images[0]}" alt="${p.name}">
+                                <a href="product.html?id=${p.id}" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                            </div>
+                            <div class="card-body">
+                                <span class="card-cat">${p.category}</span>
+                                <h3 class="card-name">${p.name}</h3>
+                                <div class="card-price">₹${p.price.toLocaleString()}</div>
+                                <button class="btn btn-maroon" onclick="addToCartFromRelated(${p.id})" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;">
+                                    <i class="ri-shopping-cart-line"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading related products:', error);
+            }
+        }
+
+        function addToCartFromRelated(id) {
+            addToCart(id);
+        }
+
+        function changeImage(src) {
+            document.getElementById('mainProductImage').src = src;
+            document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.product-thumbnail img[src="${src}"]`)?.parentElement.classList.add('active');
+        }
+
+        function selectSize(element, size) {
+            document.querySelectorAll('.size-option').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            currentSize = size;
+        }
+
+        function selectColor(element, color) {
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+            element.classList.add('active');
+            currentColor = color;
+        }
+
+        function updateQuantity(change) {
+            currentQty = Math.max(1, currentQty + change);
+            document.getElementById('qtyDisplay').textContent = currentQty;
+        }
+
+        function addToCartFromProduct() {
+            const product = getProductById(currentProductId);
+            if (!product) return;
+            addToCart(currentProductId);
+        }
+
+        function buyNow() {
+            const product = getProductById(currentProductId);
+            if (!product) return;
+            addToCart(currentProductId);
+            setTimeout(() => {
+                showNotification('Redirecting to checkout...', 'success');
+                setTimeout(() => { window.location.href = 'checkout.html'; }, 500);
+            }, 500);
+        }
+
+        function checkShipping() {
+            const input = document.getElementById('pincodeInput');
+            const result = document.getElementById('shipResult');
+            const pincode = input.value.trim();
+
+            if (pincode.length === 6 && /^\d+$/.test(pincode)) {
+                result.textContent = '✅ Delivery available! Free Shipping • 5-7 days';
+                result.style.color = '#2e7d32';
+            } else if (pincode.length === 0) {
+                result.textContent = '⚠️ Please enter a pincode';
+                result.style.color = '#f57c00';
+            } else {
+                result.textContent = '❌ Please enter a valid 6-digit pincode';
+                result.style.color = '#d32f2f';
+            }
+        }
+
+        // ==========================
+        // CART FUNCTIONS
+        // ==========================
+
+        function addToCart(productId) {
+            const product = getProductById(productId);
+            if (!product) {
+                showNotification('Product not found!', 'error');
+                return;
+            }
+
+            const result = cart.addItem(productId, 1, currentSize, currentColor);
+            if (result.success) {
+                updateCartUI();
+                renderCartSidebar();
+                showNotification(product.name + ' added to cart! 🛒', 'success');
+                openCart();
+            } else {
+                showNotification(result.message, 'error');
+            }
+        }
+
+        function openCart() {
+            document.getElementById('cartSidebar').style.right = '0';
+            document.getElementById('cartOverlay').style.display = 'block';
+            renderCartSidebar();
+        }
+
+        function closeCart() {
+            document.getElementById('cartSidebar').style.right = '-420px';
+            document.getElementById('cartOverlay').style.display = 'none';
+        }
+
+        function renderCartSidebar() {
+            const container = document.getElementById('cartItemsContainer');
+            const items = cart.items;
+            
+            document.getElementById('cartCountSidebar').textContent = cart.getItemCount();
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:40px 0;">
+                        <i class="ri-shopping-bag-line" style="font-size:48px;color:var(--ink-soft);opacity:0.3;"></i>
+                        <p style="color:var(--ink-soft);margin-top:12px;">Your cart is empty</p>
+                        <a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            items.forEach(item => {
+                total += item.price * item.quantity;
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="cart-item-details">
+                            <h5>${item.name}</h5>
+                            <p style="font-size:12px;color:var(--ink-soft);">Size: ${item.size}</p>
+                            <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                                <button onclick="updateQty(${item.id}, -1, '${item.size}', '${item.color}')" style="background:var(--cream);border:none;width:24px;height:24px;border-radius:4px;cursor:pointer;">−</button>
+                                <span style="font-weight:600;min-width:20px;text-align:center;">${item.quantity}</span>
+                                <button onclick="updateQty(${item.id}, 1, '${item.size}', '${item.color}')" style="background:var(--cream);border:none;width:24px;height:24px;border-radius:4px;cursor:pointer;">+</button>
+                                <span style="font-weight:600;color:var(--maroon);margin-left:8px;">₹${(item.price * item.quantity).toLocaleString()}</span>
+                                <button onclick="removeFromCart(${item.id}, '${item.size}', '${item.color}')" style="background:none;border:none;color:#d32f2f;cursor:pointer;margin-left:4px;"><i class="ri-delete-bin-line"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="cart-total-section">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>₹${total.toLocaleString()}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--ink-soft);padding:4px 0;">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="total-row" style="font-size:20px;border-top:2px solid var(--line);padding-top:12px;margin-top:8px;">
+                        <span>Total</span>
+                        <span>₹${total.toLocaleString()}</span>
+                    </div>
+                    <button onclick="proceedToCheckout()" class="btn btn-maroon" style="width:100%;margin-top:12px;padding:14px;justify-content:center;">
+                        <i class="ri-shopping-bag-line"></i> Proceed to Checkout
+                    </button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function updateQty(id, change, size, color) {
+            const item = cart.items.find(i => i.id === id && i.size === size && i.color === color);
+            if (item) {
+                const newQty = item.quantity + change;
+                if (newQty >= 1) {
+                    cart.updateQuantity(id, newQty, size, color);
+                    renderCartSidebar();
+                    updateCartUI();
+                } else {
+                    removeFromCart(id, size, color);
+                }
+            }
+        }
+
+        function removeFromCart(id, size, color) {
+            cart.removeItem(id, size, color);
+            renderCartSidebar();
+            updateCartUI();
+            showNotification('Item removed from cart', 'info');
+        }
+
+        function updateCartUI() {
+            const count = cart.getItemCount();
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = count;
+                cartCount.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="${type === 'success' ? 'ri-checkbox-circle-fill' : type === 'error' ? 'ri-error-warning-fill' : 'ri-information-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+
+        function proceedToCheckout() {
+            if (cart.items.length === 0) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+            showNotification('Redirecting to checkout...', 'success');
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1000);
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeCart();
+        });
+
+        // Mobile Menu
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileBtn && navLinks) {
+                mobileBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                    const icon = this.querySelector('i');
+                    if (navLinks.classList.contains('show')) {
+                        icon.className = 'ri-close-line';
+                    } else {
+                        icon.className = 'ri-menu-line';
+                    }
+                });
+            }
+            
+            // Load product
+            loadProduct();
+            updateCartUI();
+        });
+
+        console.log('🚀 Product Page Loaded Successfully!');
+    </script>
+    <script>
+        // ==========================
+        // PRODUCT PAGE - LOAD & RELATED
+        // ==========================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get product ID from URL
+            var params = new URLSearchParams(window.location.search);
+            var productId = parseInt(params.get('id')) || 1;
+    
+            // Find product
+            var product = window.products ? window.products.find(function(p) { return p.id === productId; }) : null;
+            if (!product) {
+                console.warn('Product not found:', productId);
+                return;
+            }
+    
+            // Update page with product details
+            var nameEl = document.getElementById('productName');
+            var priceEl = document.getElementById('productPrice');
+            var descEl = document.getElementById('productDesc');
+            var mainImg = document.getElementById('mainProductImage');
+    
+            if (nameEl) nameEl.textContent = product.name;
+            if (priceEl) priceEl.textContent = '₹' + (product.price || 0).toLocaleString();
+            if (descEl) descEl.textContent = product.description || 'Premium handcrafted mirror.';
+            if (mainImg && product.images && product.images[0]) {
+                mainImg.src = product.images[0];
+            }
+    
+            // Render Related Products (exclude current product)
+            var relatedGrid = document.getElementById('relatedGrid');
+            if (relatedGrid && window.products) {
+                var related = window.products.filter(function(p) { return p.id !== productId; }).slice(0, 4);
+                if (related.length === 0) {
+                    relatedGrid.innerHTML = '<p style="text-align:center;padding:40px;color:#5b4c45;">No related products found.</p>';
+                    return;
+                }
+                relatedGrid.innerHTML = related.map(function(p) {
+                    var img = p.images && p.images[0] ? p.images[0] : '';
+                    return '<div class="card">' +
+                        '<div class="card-img">' +
+                        '<img src="' + img + '" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/400x500/700C0C/FFFFFF?text=' + encodeURIComponent(p.name) + '\'">' +
+                        '<a href="product.html?id=' + p.id + '" class="view-btn"><i class="ri-eye-line"></i> View Product</a>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                        '<span class="card-cat">' + (p.category || 'Collection') + '</span>' +
+                        '<h3 class="card-name">' + p.name + '</h3>' +
+                        '<div class="card-price">₹' + (p.price || 0).toLocaleString() + '</div>' +
+                        '<button class="btn btn-maroon add-to-cart" data-id="' + p.id + '" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>' +
+                        '</div></div>';
+                }).join('');
+            }
+    
+            // Update cart UI
+            if (window.updateCartUI) {
+                window.updateCartUI();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

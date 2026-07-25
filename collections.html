@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections | KAIRA Luxury Handcrafted Mirrors</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+        .cart-icon { position: relative; display: inline-block; }
+        .cart-count { position: absolute; top: -8px; right: -8px; background: var(--maroon); color: white; width: 18px; height: 18px; border-radius: 50%; font-size: 11px; font-weight: 700; display: none; align-items: center; justify-content: center; }
+        #cartSidebar { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: white; z-index: 10000; transition: right 0.4s ease; box-shadow: -10px 0 40px rgba(0,0,0,0.1); padding: 24px; overflow-y: auto; }
+        #cartOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: none; }
+        .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .cart-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+        .cart-item-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+        .cart-item-actions button { background: var(--cream); border: none; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .cart-item-actions button:hover { background: var(--maroon); color: white; }
+        .cart-total-section { margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--line); }
+        .cart-total-section .total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 18px; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 16px 24px; border-radius: 12px; z-index: 99999; transform: translateX(120%); transition: transform 0.4s ease; max-width: 400px; color: white; font-family: 'Inter', sans-serif; }
+        .notification.success { background: #2e7d32; }
+        .notification.error { background: #d32f2f; }
+        .notification-content { display: flex; align-items: center; gap: 12px; }
+        @media (max-width: 600px) { #cartSidebar { width: 100%; right: -100%; } }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader"><h1>KAIRA</h1></div>
+    <button id="topBtn">↑</button>
+
+    <!-- CART SIDEBAR -->
+    <div id="cartSidebar">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--line);">
+            <h3 style="font-family:'Fraunces',serif;">Your Cart</h3>
+            <button onclick="closeCart()" style="background:none;border:none;font-size:24px;cursor:pointer;">×</button>
+        </div>
+        <div id="cartItemsContainer">
+            <div style="text-align:center;padding:40px 0;">
+                <i class="ri-shopping-bag-line" style="font-size:48px;color:var(--ink-soft);opacity:0.3;"></i>
+                <p style="color:var(--ink-soft);margin-top:12px;">Your cart is empty</p>
+                <a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a>
+            </div>
+        </div>
+    </div>
+    <div id="cartOverlay" onclick="closeCart()"></div>
+
+    <!-- NAVIGATION -->
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">
+                <img src="assets/logo/logo.png" alt="KAIRA Logo">
+                <span>KAIRA</span>
+            </a>
+            <nav class="nav-links">
+                <a href="collections.html">Products</a>
+                <a href="#featured">Best Sellers</a>
+                <a href="#customise">Customise</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+                <div style="display:flex;align-items:center;gap:16px;">
+                <a href="#" aria-label="Search"><i class="ri-search-line"></i></a>
+                <a href="#" aria-label="Wishlist"><i class="ri-heart-line"></i></a>
+                <a href="#" class="cart-icon" aria-label="Cart" onclick="openCart()">
+                    <i class="ri-shopping-bag-line"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </a>
+                <a href="#" class="nav-cta">Shop Now</a>
+                <button class="nav-toggle" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- COLLECTIONS HERO -->
+    <section style="background:linear-gradient(135deg,#470707,#700C0C);color:white;padding:80px 0;text-align:center;">
+        <div class="wrap">
+            <span class="section-tag" style="color:#C8A46B;">Our Collections</span>
+            <h1 style="font-size:clamp(40px,5vw,64px);">Signature Collections</h1>
+            <p style="max-width:600px;margin:20px auto;opacity:0.8;font-size:18px;line-height:1.8;">
+                Each collection is handcrafted with precision, premium materials and timeless luxury aesthetics.
+            </p>
+        </div>
+    </section>
+
+    <!-- ALL COLLECTIONS -->
+    <section class="section">
+        <div class="wrap">
+            <div class="grid">
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/fabric.jpg" alt="Fabric Mirrors">
+                        <a href="product.html?id=1" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">SIGNATURE</span>
+                        <h3 class="card-name">Fabric Mirrors</h3>
+                        <p>India's premium upholstered mirror collection in 25+ colours.</p>
+                        <div class="card-price">Starting ₹8,999</div>
+                        <button class="btn btn-maroon" onclick="addToCart(1, '24x36', '#EFE5D6')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/led.jpg" alt="LED Collection">
+                        <a href="product.html?id=2" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">MODERN</span>
+                        <h3 class="card-name">LED Collection</h3>
+                        <p>Elegant illuminated mirrors for luxury dressing and bathroom spaces.</p>
+                        <div class="card-price">Starting ₹12,999</div>
+                        <button class="btn btn-maroon" onclick="addToCart(2, '18x24', '#EFE5D6')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/evergreen.jpg" alt="Evergreen">
+                        <a href="product.html?id=3" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">CLASSIC</span>
+                        <h3 class="card-name">Evergreen Collection</h3>
+                        <p>Timeless handcrafted mirrors inspired by luxury interiors.</p>
+                        <div class="card-price">Starting ₹6,500</div>
+                        <button class="btn btn-maroon" onclick="addToCart(3, '24x36', '#C8A46B')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/bathroom.jpg" alt="Bathroom Collection">
+                        <a href="product.html?id=4" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">LUXURY</span>
+                        <h3 class="card-name">Bathroom Collection</h3>
+                        <p>Premium moisture-resistant mirrors for modern bathrooms.</p>
+                        <div class="card-price">Starting ₹7,499</div>
+                        <button class="btn btn-maroon" onclick="addToCart(4, '24x36', '#EFE5D6')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/fabric.jpg" alt="Bespoke Collection">
+                        <a href="product.html?id=1" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">BESPOKE</span>
+                        <h3 class="card-name">Custom Collection</h3>
+                        <p>Fully customisable mirrors to match your unique interior style.</p>
+                        <div class="card-price">Custom Quote</div>
+                        <button class="btn btn-maroon" onclick="addToCart(1, 'Custom', '#C8A46B')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img">
+                        <img src="assets/collections/led.jpg" alt="Premium Collection">
+                        <a href="product.html?id=2" class="view-btn"><i class="ri-eye-line"></i> View Product</a>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-cat">PREMIUM</span>
+                        <h3 class="card-name">Designer Collection</h3>
+                        <p>Exclusive mirrors for luxury hotels and premium interiors.</p>
+                        <div class="card-price">Starting ₹18,999</div>
+                        <button class="btn btn-maroon" onclick="addToCart(2, '30x48', '#2B3A55')" style="margin-top:10px;width:100%;justify-content:center;font-size:13px;padding:10px;"><i class="ri-shopping-cart-line"></i> Add to Cart</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+        <div class="wrap">
+            <div style="background:linear-gradient(135deg,#700C0C,#470707);border-radius:30px;padding:60px;text-align:center;color:white;">
+                <h2 style="font-size:38px;">Looking for Something Different?</h2>
+                <p style="max-width:600px;margin:20px auto;opacity:0.9;line-height:1.8;">Every mirror is fully customisable. Choose any design, any fabric, any colour, any size.</p>
+                <a href="index.html#customise" class="btn btn-cream" style="margin-top:20px;">Start Customisation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-grid">
+                <div>
+                    <h2 class="serif">KAIRA</h2>
+                    <p style="margin-top:18px;">Luxury handcrafted mirrors designed for timeless interiors.</p>
+                    <div style="display:flex;gap:12px;margin-top:16px;">
+                        <a href="#" aria-label="Instagram"><i class="ri-instagram-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="ri-youtube-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="ri-whatsapp-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Collections</h4>
+                    <a href="#">Fabric Mirrors</a><br>
+                    <a href="#">LED Collection</a><br>
+                    <a href="#">Evergreen</a><br>
+                    <a href="#">Bathroom Mirrors</a>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <a href="#">Instagram</a><br>
+                    <a href="#">Pinterest</a><br>
+                    <a href="#">WhatsApp</a><br>
+                    <a href="mailto:support@kairahandcraft.store">support@kairahandcraft.store</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 KAIRA. All Rights Reserved.</div>
+                <div>Crafted with ❤ in India.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WHATSAPP -->
+    <a href="#" style="position:fixed;right:25px;bottom:25px;width:62px;height:62px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 20px 40px rgba(0,0,0,.25);z-index:999;" aria-label="Contact on WhatsApp">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+
+    <script>
+        function openCart() {
+            document.getElementById('cartSidebar').style.right = '0';
+            document.getElementById('cartOverlay').style.display = 'block';
+            renderCartSidebar();
+        }
+
+        function closeCart() {
+            document.getElementById('cartSidebar').style.right = '-420px';
+            document.getElementById('cartOverlay').style.display = 'none';
+        }
+
+        function renderCartSidebar() {
+            const container = document.getElementById('cartItemsContainer');
+            const items = cart.items;
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:40px 0;">
+                        <i class="ri-shopping-bag-line" style="font-size:48px;color:var(--ink-soft);opacity:0.3;"></i>
+                        <p style="color:var(--ink-soft);margin-top:12px;">Your cart is empty</p>
+                        <a href="collections.html" class="btn btn-maroon" style="margin-top:16px;display:inline-block;">Shop Now</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            let total = 0;
+            items.forEach(item => {
+                total += item.price * item.quantity;
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="cart-item-details">
+                            <h5>${item.name}</h5>
+                            <p>Size: ${item.size}</p>
+                            <div class="cart-item-actions">
+                                <button onclick="updateQty(${item.id}, -1, '${item.size}', '${item.color}')">−</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="updateQty(${item.id}, 1, '${item.size}', '${item.color}')">+</button>
+                                <span style="font-weight:600;color:var(--maroon);margin-left:8px;">₹${(item.price * item.quantity).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="cart-total-section">
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span>₹${total.toLocaleString()}</span>
+                    </div>
+                    <button onclick="checkout()" class="btn btn-maroon" style="width:100%;margin-top:12px;padding:14px;justify-content:center;">Proceed to Checkout</button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function updateQty(id, change, size, color) {
+            const item = cart.items.find(i => i.id === id && i.size === size && i.color === color);
+            if (item) {
+                const newQty = item.quantity + change;
+                if (newQty >= 1) {
+                    cart.updateQuantity(id, newQty, size, color);
+                    renderCartSidebar();
+                    updateCartUI();
+                } else {
+                    cart.removeItem(id, size, color);
+                    renderCartSidebar();
+                    updateCartUI();
+                }
+            }
+        }
+
+        function updateCartUI() {
+            const count = cart.getItemCount();
+            const cartCount = document.getElementById('cartCount');
+            if (cartCount) {
+                cartCount.textContent = count;
+                cartCount.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function addToCart(productId, size, color) {
+            const result = cart.addItem(parseInt(productId), 1, size, color);
+            if (result.success) {
+                updateCartUI();
+                renderCartSidebar();
+                showNotification('Added to cart! 🛒', 'success');
+                openCart();
+            } else {
+                showNotification(result.message, 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <i class="${type === 'success' ? 'ri-checkbox-circle-fill' : 'ri-error-warning-fill'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            setTimeout(() => {
+                notification.style.transform = 'translateX(120%)';
+                setTimeout(() => notification.remove(), 400);
+            }, 3000);
+        }
+
+        function checkout() {
+            if (cart.items.length === 0) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+            showNotification('Redirecting to checkout...', 'success');
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1000);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeCart();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const navLinks = document.querySelector('.nav-links');
+            if (mobileBtn && navLinks) {
+                mobileBtn.addEventListener('click', function() {
+                    navLinks.classList.toggle('show');
+                    const icon = this.querySelector('i');
+                    if (navLinks.classList.contains('show')) {
+                        icon.className = 'ri-close-line';
+                    } else {
+                        icon.className = 'ri-menu-line';
+                    }
+                });
+            }
+            updateCartUI();
+        });
+
+        console.log('🚀 Collections Page Loaded!');
+    </script>
+    <!-- ========================== -->
+<!-- SCRIPTS - GLOBAL -->
+<!-- ========================== -->
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script>
+    // Force render products on collections page
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof renderAllProducts === 'function') {
+            setTimeout(renderAllProducts, 100);
+        }
+        if (window.updateCartUI) {
+            window.updateCartUI();
+        }
+    });
+</script>
+
+</body>
+
+</html>

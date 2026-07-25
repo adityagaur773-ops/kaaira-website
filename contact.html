@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | KAIRA Luxury Handcrafted Mirrors</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,440;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- ======================= NAVIGATION ======================= -->
+    <header class="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="brand">
+                <img src="assets/logo/logo.png" alt="KAIRA Logo">
+                <span>KAIRA</span>
+            </a>
+            <nav class="nav-links">
+                <a href="collections.html">Collections</a>
+                <a href="index.html#featured">Best Sellers</a>
+                <a href="index.html#customise">Customise</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <a href="#" aria-label="Search"><i class="ri-search-line"></i></a>
+                <a href="#" aria-label="Wishlist"><i class="ri-heart-line"></i></a>
+                <a href="#" aria-label="Cart"><i class="ri-shopping-bag-line"></i></a>
+                <a href="#" class="nav-cta">Shop Now</a>
+                <button class="nav-toggle" id="mobileMenuBtn" aria-label="Toggle menu">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================= CONTACT HERO ======================= -->
+    <section style="background:linear-gradient(135deg,#470707,#700C0C);color:white;padding:80px 0;text-align:center;">
+        <div class="wrap">
+            <span class="section-tag" style="color:#C8A46B;">Get In Touch</span>
+            <h1 style="font-size:clamp(40px,5vw,64px);">Let's Create Something Beautiful</h1>
+            <p style="max-width:600px;margin:20px auto;opacity:0.8;font-size:18px;line-height:1.8;">
+                Whether you have a question, want to customise a mirror, or need interior styling advice — we're here to help.
+            </p>
+        </div>
+    </section>
+
+    <!-- ======================= CONTACT FORM & INFO ======================= -->
+    <section class="section">
+        <div class="wrap">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;">
+
+                <!-- Contact Form -->
+                <div>
+                    <span class="section-tag">Send a Message</span>
+                    <h2>We'd Love to Hear From You</h2>
+                    <p style="color:var(--ink-soft);line-height:1.8;margin:20px 0;">Fill in the form and our team will get back to you within 24 hours.</p>
+
+                    <form id="contactForm" style="display:flex;flex-direction:column;gap:20px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                            <input type="text" placeholder="First Name" required style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;">
+                            <input type="text" placeholder="Last Name" required style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;">
+                        </div>
+                        <input type="email" placeholder="Email Address" required style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;">
+                        <input type="tel" placeholder="Phone Number" style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;">
+                        <select style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;background:white;">
+                            <option value="">Select Subject</option>
+                            <option value="custom">Custom Order</option>
+                            <option value="inquiry">Product Inquiry</option>
+                            <option value="bulk">Bulk Order</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <textarea placeholder="Your Message" rows="5" required style="padding:16px;border-radius:14px;border:1px solid var(--line);font-size:15px;resize:vertical;"></textarea>
+                        <button type="submit" class="btn btn-maroon" style="padding:16px 32px;font-size:16px;">Send Message</button>
+                    </form>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <span class="section-tag">Contact Info</span>
+                    <h2>Reach Out to Us</h2>
+
+                    <div style="margin-top:30px;display:flex;flex-direction:column;gap:25px;">
+                        <!-- Email -->
+                        <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--cream-card);border-radius:16px;border:1px solid var(--line);">
+                            <i class="ri-mail-line" style="font-size:24px;color:var(--maroon);"></i>
+                            <div>
+                                <h4 style="margin-bottom:4px;font-size:14px;color:var(--ink-soft);">Email</h4>
+                                <a href="mailto:support@kairahandcraft.store" style="color:var(--maroon);font-weight:500;">support@kairahandcraft.store</a>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--cream-card);border-radius:16px;border:1px solid var(--line);">
+                            <i class="ri-phone-line" style="font-size:24px;color:var(--maroon);"></i>
+                            <div>
+                                <h4 style="margin-bottom:4px;font-size:14px;color:var(--ink-soft);">Phone</h4>
+                                <a href="tel:+919910481273" style="color:var(--maroon);font-weight:500;">+91 9910481273</a>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp -->
+                        <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--cream-card);border-radius:16px;border:1px solid var(--line);">
+                            <i class="ri-whatsapp-line" style="font-size:24px;color:#25D366;"></i>
+                            <div>
+                                <h4 style="margin-bottom:4px;font-size:14px;color:var(--ink-soft);">WhatsApp</h4>
+                                <a href="#" style="color:#25D366;font-weight:500;">Chat with us on WhatsApp</a>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div style="display:flex;gap:16px;align-items:flex-start;padding:20px;background:var(--cream-card);border-radius:16px;border:1px solid var(--line);">
+                            <i class="ri-map-pin-line" style="font-size:24px;color:var(--maroon);"></i>
+                            <div>
+                                <h4 style="margin-bottom:4px;font-size:14px;color:var(--ink-soft);">Studio</h4>
+                                <p style="color:var(--ink-soft);margin:0;">NEW DELHI, INDIA</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div style="margin-top:30px;padding:20px;background:var(--cream-card);border-radius:16px;border:1px solid var(--line);text-align:center;">
+                        <p style="font-weight:600;margin-bottom:12px;">Follow Us</p>
+                        <div style="display:flex;gap:16px;justify-content:center;">
+                            <a href="#" style="width:44px;height:44px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;transition:all .3s;hover:transform:scale(1.1);">
+                                <i class="ri-instagram-line"></i>
+                            </a>
+                            <a href="#" style="width:44px;height:44px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;transition:all .3s;hover:transform:scale(1.1);">
+                                <i class="ri-pinterest-line"></i>
+                            </a>
+                            <a href="#" style="width:44px;height:44px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;transition:all .3s;hover:transform:scale(1.1);">
+                                <i class="ri-youtube-line"></i>
+                            </a>
+                            <a href="#" style="width:44px;height:44px;border-radius:50%;background:#25D366;color:white;display:flex;align-items:center;justify-content:center;transition:all .3s;hover:transform:scale(1.1);">
+                                <i class="ri-whatsapp-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= FOOTER ======================= -->
+    <footer class="footer">
+        <div class="wrap">
+            <div class="footer-grid">
+                <div>
+                    <h2 class="serif">KAIRA</h2>
+                    <p style="margin-top:18px;">Luxury handcrafted mirrors designed for timeless interiors.</p>
+                    <div style="display:flex;gap:12px;margin-top:16px;">
+                        <a href="#" aria-label="Instagram"><i class="ri-instagram-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="ri-youtube-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="ri-whatsapp-line" style="font-size:20px;color:rgba(244,239,231,0.6);"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Collections</h4>
+                    <a href="#">Fabric Mirrors</a><br>
+                    <a href="#">LED Collection</a><br>
+                    <a href="#">Evergreen</a><br>
+                    <a href="#">Bathroom Mirrors</a>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <a href="#">Instagram</a><br>
+                    <a href="#">Pinterest</a><br>
+                    <a href="#">WhatsApp</a><br>
+                    <a href="mailto:kairahandcraft@gmail.com">support@kairahandcraft.store</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 KAIRA. All Rights Reserved.</div>
+                <div>Crafted with ❤ in India.</div>
+            </div>
+        </div>
+    </footer>
+
+    <button id="topBtn">↑</button>
+    <a href="#" style="position:fixed;right:25px;bottom:25px;width:62px;height:62px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 20px 40px rgba(0,0,0,.25);z-index:999;" aria-label="Contact on WhatsApp">
+        <i class="ri-whatsapp-line"></i>
+    </a>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>
